@@ -1,0 +1,81 @@
+﻿@model CQRSRentACar.Entities.Message
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0 bg-gradient-primary">
+                    <h6 class="text-white">📧 Mesaj Detayı</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>👤 Ad Soyad:</strong> @Model.FullName @Model.Surname</p>
+                            <p><strong>📧 Email:</strong> @Model.Email</p>
+                            <p><strong>📞 Telefon:</strong> @Model.Phone</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>📝 Konu:</strong> @Model.Subject</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mb-4">
+                        <h6><strong>💬 Mesaj:</strong></h6>
+                        <p class="bg-light p-3 rounded">@Model.MessageDetail</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header pb-0 bg-gradient-success">
+                    <h6 class="text-white">🤖 AI Otomatik Cevap</h6>
+                    @if (ViewBag.EmailStatus != null)
+                    {
+                        <p class="text-white text-sm mb-0">@ViewBag.EmailStatus</p>
+                    }
+                </div>
+                <div class="card-body">
+                    <textarea id="emailContent" class="form-control" rows="12" @(ViewBag.EmailStatus != null && ViewBag.EmailStatus.Contains("gönderildi") ? "readonly" : "")>@ViewBag.AutoReply</textarea>
+
+                    @if (ViewBag.EmailStatus == null || !ViewBag.EmailStatus.Contains("gönderildi"))
+                    {
+                        <button onclick="sendEmail()" class="btn btn-success mt-3">
+                            <i class="fas fa-paper-plane"></i> Email Gönder
+                        </button>
+                    }
+
+                    <a href="/Admin/Messages" class="btn btn-secondary mt-3">
+                        <i class="fas fa-arrow-left"></i> Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sendEmail() {
+        var content = document.getElementById('emailContent').value;
+
+        fetch('/Admin/SendEmail', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                messageId: @Model.MessageId,
+                emailContent: content
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                alert('✅ Email başarıyla gönderildi!');
+                window.location.href = '/Admin/Messages';
+            } else {
+                alert('❌ Hata: ' + data.message);
+            }
+        });
+    }
+</script>

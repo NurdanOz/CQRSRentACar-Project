@@ -1,0 +1,69 @@
+﻿@model CQRSRentACar.CQRSPattern.Results.AboutResults.GetAboutByIdQueryResult
+@{
+   
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0 bg-gradient-warning">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-white mb-0">✏️ Hakkımızda Düzenle</h6>
+                        <a asp-action="Abouts" class="btn btn-sm btn-light">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateAbout" method="post">
+                        <input type="hidden" name="AboutId" value="@Model.AboutId" />
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">📋 Başlık</label>
+                                <input type="text" class="form-control" name="Title" value="@Model.Title" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">📝 Açıklama</label>
+                                <textarea class="form-control" name="Description" rows="5" required>@Model.Description</textarea>
+                                <small class="text-muted">İlk açıklama paragrafı</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">📄 Açıklama 2</label>
+                                <textarea class="form-control" name="Description2" rows="5">@Model.Description2</textarea>
+                                <small class="text-muted">İkinci açıklama paragrafı (opsiyonel)</small>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button type="submit" class="btn bg-gradient-warning w-100">
+                                    <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 1px solid #d2d6da;
+    }
+
+        .form-control:focus {
+            border-color: #fb8c00;
+            box-shadow: 0 0 0 0.2rem rgba(251, 140, 0, 0.25);
+        }
+</style>

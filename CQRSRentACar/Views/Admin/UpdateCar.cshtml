@@ -1,0 +1,101 @@
+﻿@model CQRSRentACar.CQRSPattern.Results.CarResults.GetCarByIdQueryResult
+@{
+    
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0 bg-gradient-warning">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-white mb-0">✏️ Araç Güncelle</h6>
+                        <a asp-action="Cars" class="btn btn-sm btn-light">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateCar" method="post">
+                        <input type="hidden" name="CarId" value="@Model.CarId" />
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">📷 Araç Görseli URL</label>
+                                <input type="text" class="form-control" name="CarImage" value="@Model.CarImage" placeholder="https://example.com/car.jpg">
+                                @if (!string.IsNullOrEmpty(Model.CarImage))
+                                {
+                                    <div class="mt-2">
+                                        <img src="@Model.CarImage" alt="@Model.CarBrand" class="img-thumbnail" style="max-width: 200px;">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">🏷️ Marka</label>
+                                <input type="text" class="form-control" name="CarBrand" value="@Model.CarBrand" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">🚙 Model</label>
+                                <input type="text" class="form-control" name="CarModel" value="@Model.CarModel" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">📅 Yıl</label>
+                                <input type="text" class="form-control" name="CarYear" value="@Model.CarYear" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">👥 Koltuk Sayısı</label>
+                                <input type="text" class="form-control" name="CarSeat" value="@Model.CarSeat" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">⚙️ Vites</label>
+                                <select class="form-control" name="CarTransmission" required>
+                                    <option value="OTOMATİK" selected="@(Model.CarTransmission == "OTOMATİK")">Otomatik</option>
+                                    <option value="MANUEL" selected="@(Model.CarTransmission == "MANUEL")">Manuel</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">⛽ Yakıt Tipi</label>
+                                <select class="form-control" name="CarFuel" required>
+                                    <option value="BENZİN" selected="@(Model.CarFuel == "BENZİN")">Benzin</option>
+                                    <option value="MOTORİN" selected="@(Model.CarFuel == "MOTORİN")">Motorin</option>
+                                    <option value="HİBRİT" selected="@(Model.CarFuel == "HİBRİT")">Hibrit</option>
+                                    <option value="ELEKTRİK" selected="@(Model.CarFuel == "ELEKTRİK")">Elektrik</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">🛣️ Kilometre</label>
+                                <input type="text" class="form-control" name="CarKm" value="@Model.CarKm" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">⭐ Değerlendirme (0-5)</label>
+                                <input type="number" step="0.1" class="form-control" name="CarReview" value="@Model.CarReview" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">💰 Günlük Fiyat (₺)</label>
+                                <input type="number" step="0.01" class="form-control" name="CarPrice" value="@Model.CarPrice" required>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button type="submit" class="btn bg-gradient-warning w-100">
+                                    <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

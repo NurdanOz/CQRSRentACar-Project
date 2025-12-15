@@ -1,0 +1,136 @@
+﻿
+@{
+   
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-robot"></i> Araç Öneri Asistanı (AI)
+                    </h4>
+                    <small>Aradığınız özellikleri yazın, size en uygun araçları önerelim</small>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Sol Taraf - Kullanıcı Girdisi -->
+                        <div class="col-md-5">
+                            <div class="mb-3">
+                                <label for="userPrompt" class="form-label fw-bold">
+                                    <i class="fas fa-comment-dots"></i> Ne tür bir araç arıyorsunuz?
+                                </label>
+                                <textarea class="form-control"
+                                          id="userPrompt"
+                                          rows="6"
+                                          placeholder="Örnek: Ailemle tatile gidiyoruz, 5 kişilik, konforlu ve ekonomik bir araç istiyorum. Bagaj alanı geniş olmalı."
+                                          style="resize: none;"></textarea>
+                            </div>
+
+                            <button type="button"
+                                    class="btn btn-primary btn-lg w-100"
+                                    id="btnGetRecommendation">
+                                <i class="fas fa-magic"></i> Öneri Al
+                            </button>
+
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-lightbulb"></i> <strong>İpucu:</strong>
+                                    Kişi sayısı, yakıt tercihi, kullanım amacı gibi detaylar verin.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Sağ Taraf - AI Cevabı -->
+                        <div class="col-md-7">
+                            <div class="mb-2">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-comments"></i> AI Önerisi
+                                </label>
+                            </div>
+
+                            <!-- Loading -->
+                            <div id="loadingDiv" style="display: none;" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                                <p class="mt-3 text-muted">AI düşünüyor...</p>
+                            </div>
+
+                            <!-- Cevap Alanı -->
+                            <div id="recommendationResult"
+                                 class="border rounded p-4 bg-light"
+                                 style="min-height: 300px; max-height: 500px; overflow-y: auto; white-space: pre-wrap; display: none;">
+                            </div>
+
+                            <!-- İlk Durum -->
+                            <div id="initialMessage" class="text-center py-5 text-muted">
+                                <i class="fas fa-robot fa-3x mb-3"></i>
+                                <p>Soldaki alana ihtiyaçlarınızı yazın ve "Öneri Al" butonuna tıklayın</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('btnGetRecommendation').addEventListener('click', async function() {
+        const userPrompt = document.getElementById('userPrompt').value.trim();
+        const loadingDiv = document.getElementById('loadingDiv');
+        const resultDiv = document.getElementById('recommendationResult');
+        const initialMessage = document.getElementById('initialMessage');
+
+        if (!userPrompt) {
+            alert('Lütfen aradığınız araç özelliklerini yazın.');
+            return;
+        }
+
+        // Loading göster
+        initialMessage.style.display = 'none';
+        resultDiv.style.display = 'none';
+        loadingDiv.style.display = 'block';
+
+        try {
+            const response = await fetch('/Admin/GetRecommendation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'userPrompt=' + encodeURIComponent(userPrompt)
+            });
+
+            const data = await response.json();
+
+            loadingDiv.style.display = 'none';
+
+            if (data.success) {
+                resultDiv.textContent = data.recommendation;
+                resultDiv.style.display = 'block';
+            } else {
+                alert(data.message || 'Bir hata oluştu.');
+            }
+        } catch (error) {
+            loadingDiv.style.display = 'none';
+            alert('Bağlantı hatası: ' + error.message);
+        }
+    });
+</script>
+
+<style>
+    #recommendationResult {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    #userPrompt:focus {
+        border-color: #6c757d;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>

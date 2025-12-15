@@ -1,0 +1,35 @@
+﻿@using CQRSRentACar.ViewComponents
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Navbar & Hero Start -->
+@await Component.InvokeAsync("UNavbar")
+<!-- Navbar & Hero End -->
+<!-- Carousel Start -->
+@await Component.InvokeAsync("USlider")
+<!-- Carousel End -->
+<!-- Features Start -->
+@await Component.InvokeAsync("UFeatures")
+<!-- Features End -->
+<!-- About Start -->
+@await Component.InvokeAsync("UAbout")
+<!-- About End -->
+<!-- Fact Counter -->
+@await Component.InvokeAsync("UStatistics")
+<!-- Fact Counter -->
+<!-- Services Start -->
+@await Component.InvokeAsync("UServices")
+<!-- Services End -->
+<!-- Car categories Start -->
+@await Component.InvokeAsync("UCars")
+<!-- Car Steps End -->
+<!-- Team Start -->
+@await Component.InvokeAsync("UEmployee")
+<!-- Team End -->
+<!-- Testimonial Start -->
+@await Component.InvokeAsync("UTestimonial")
+<!-- Testimonial End -->
+<!-- Footer Start -->
+@await Component.InvokeAsync("UFooter")
+<!-- Footer End -->

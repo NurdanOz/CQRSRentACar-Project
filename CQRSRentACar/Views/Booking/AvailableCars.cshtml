@@ -1,0 +1,465 @@
+﻿@model List<CQRSRentACar.CQRSPattern.Results.BookingResults.GetAvailableCarsQueryResult>
+
+@{
+    ViewData["Title"] = "Müsait Araçlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid page-header-compact">
+    <div class="container">
+        <div class="row align-items-center py-3">
+            <div class="col-md-8">
+                <h2 class="text-white mb-2">Müsait Araçlar</h2>
+                <div class="d-flex flex-wrap gap-3 text-white-50 small">
+                    <span><i class="fa fa-map-marker-alt"></i> @ViewBag.PickUpLocation → @ViewBag.DropOffLocation</span>
+                    <span><i class="fa fa-calendar"></i> @ViewBag.PickUpDate.ToString("dd.MM.yyyy HH:mm")</span>
+                    <span><i class="fa fa-calendar-check"></i> @ViewBag.DropOffDate.ToString("dd.MM.yyyy HH:mm")</span>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                <span class="badge bg-light text-dark px-3 py-2">
+                    <i class="fa fa-clock text-primary"></i>
+                    <strong>@((ViewBag.DropOffDate - ViewBag.PickUpDate).Days) Gün</strong>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Araçlar Bölümü -->
+<div class="container-fluid py-5">
+    <div class="container py-4">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                <h4 class="alert-heading">Üzgünüz!</h4>
+                <p>Seçtiğiniz tarihler için müsait araç bulunmamaktadır.</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="/" class="btn btn-primary">Ana Sayfaya Dön</a>
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var car in Model)
+                {
+                    var days = (ViewBag.DropOffDate - ViewBag.PickUpDate).Days;
+                    var totalPrice = car.CarPrice * days;
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="position-relative overflow-hidden" style="height: 250px;">
+                                <img src="~/@car.CarImage" class="card-img-top" alt="@car.CarBrand @car.CarModel" style="height: 100%; width: 100%; object-fit: cover;">
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-primary">
+                                    <i class="fa fa-star"></i> @car.CarReview
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold mb-3">@car.CarBrand @car.CarModel</h5>
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="feature-box">
+                                            <i class="fa fa-cog text-primary"></i>
+                                            <span class="ms-2">@car.CarTransmission</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="feature-box">
+                                            <i class="fa fa-gas-pump text-primary"></i>
+                                            <span class="ms-2">@car.CarFuel</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="feature-box">
+                                            <i class="fa fa-users text-primary"></i>
+                                            <span class="ms-2">@car.CarSeat</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="feature-box">
+                                            <i class="fa fa-clock text-primary"></i>
+                                            <span class="ms-2">@days Gün</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="price-section p-3 bg-light rounded mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small">Günlük</span>
+                                        <span class="fw-semibold">₺@car.CarPrice.ToString("N2")</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Toplam</span>
+                                        <h4 class="text-primary mb-0">₺@totalPrice.ToString("N2")</h4>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-primary w-100 btn-lg" data-bs-toggle="modal" data-bs-target="#bookingModal@(car.CarId)">
+                                    <i class="fa fa-calendar-check"></i> Şimdi Kirala
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rezervasyon Modal -->
+                    <div class="modal fade" id="bookingModal@(car.CarId)" tabindex="-1" aria-labelledby="bookingModalLabel@(car.CarId)" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="bookingModalLabel@(car.CarId)">
+                                        <i class="fa fa-car"></i> @car.CarBrand @car.CarModel - Rezervasyon
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="/Booking/CreateBooking" method="post">
+                                    <div class="modal-body">
+                                        <!-- Hidden Inputs -->
+                                        <input type="hidden" name="CarId" value="@car.CarId" />
+                                        <input type="hidden" name="CarBrand" value="@car.CarBrand" />
+                                        <input type="hidden" name="CarModel" value="@car.CarModel" />
+                                        <input type="hidden" name="PickUpDate" value="@ViewBag.PickUpDate.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                                        <input type="hidden" name="DropOffDate" value="@ViewBag.DropOffDate.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                                        <input type="hidden" name="PickUpLocation" value="@ViewBag.PickUpLocation" />
+                                        <input type="hidden" name="DropOffLocation" value="@ViewBag.DropOffLocation" />
+                                        <input type="hidden" name="TotalPrice" value="@totalPrice" />
+
+                                        <!-- Rezervasyon Özeti -->
+                                        <div class="alert alert-info mb-3">
+                                            <strong>Rezervasyon Özeti:</strong><br>
+                                            <small>
+                                                <i class="fa fa-calendar"></i> @ViewBag.PickUpDate.ToString("dd.MM.yyyy HH:mm") - @ViewBag.DropOffDate.ToString("dd.MM.yyyy HH:mm")<br>
+                                                <i class="fa fa-map-marker-alt"></i> @ViewBag.PickUpLocation → @ViewBag.DropOffLocation<br>
+                                                <i class="fa fa-clock"></i> @days Gün | <i class="fa fa-money-bill"></i> Toplam: <strong>₺@totalPrice.ToString("N2")</strong>
+                                            </small>
+                                        </div>
+
+                                        <!-- Kullanıcı Bilgileri -->
+                                        <div class="mb-3">
+                                            <label for="name@(car.CarId)" class="form-label">Ad Soyad *</label>
+                                            <input type="text" class="form-control" id="name@(car.CarId)" name="Name" placeholder="Adınız ve Soyadınız" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="email@(car.CarId)" class="form-label">Email *</label>
+                                            <input type="email" class="form-control" id="email@(car.CarId)" name="Email" placeholder="ornek@email.com" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="phone@(car.CarId)" class="form-label">Telefon *</label>
+                                            <input type="tel" class="form-control" id="phone@(car.CarId)" name="Phone" placeholder="05XX XXX XX XX" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-check"></i> Rezervasyonu Tamamla
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Distance Alert Modal -->
+<div class="modal fade" id="distanceAlertModal" tabindex="-1" aria-labelledby="distanceAlertModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-warning text-dark border-0">
+                <h5 class="modal-title fw-bold" id="distanceAlertModalLabel">
+                    <i class="fa fa-exclamation-triangle"></i> Farklı Lokasyon Uyarısı
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="distanceLoadingSpinner" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Mesafe hesaplanıyor...</p>
+                </div>
+
+                <div id="distanceContent" style="display: none;">
+                    <div class="alert alert-info border-0 mb-4">
+                        <h6 class="fw-bold mb-2">
+                            <i class="fa fa-info-circle"></i> Dikkat!
+                        </h6>
+                        <p class="mb-0">Alış ve bırakış noktanız farklı! Bu durumda ek ücret uygulanacaktır.</p>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-map-marker-alt fa-2x text-success me-3"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Alış Noktası</small>
+                                            <strong id="fromCityDisplay">@ViewBag.PickUpLocation</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-map-marker-alt fa-2x text-danger me-3"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Bırakış Noktası</small>
+                                            <strong id="toCityDisplay">@ViewBag.DropOffLocation</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 bg-primary bg-opacity-10 mb-3">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <i class="fa fa-road fa-2x text-primary mb-2"></i>
+                                        <h4 class="mb-0" id="distanceKm">- km</h4>
+                                        <small class="text-muted">Mesafe</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <i class="fa fa-clock fa-2x text-primary mb-2"></i>
+                                        <h4 class="mb-0" id="estimatedTime">-</h4>
+                                        <small class="text-muted">Tahmini Süre</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h6 class="mb-0 fw-bold"><i class="fa fa-calculator"></i> Maliyet Detayları</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Yakıt Tipi:</span>
+                                <strong id="fuelType">-</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Güncel Yakıt Fiyatı:</span>
+                                <strong id="fuelPrice">-</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Ortalama Tüketim:</span>
+                                <strong id="fuelConsumption">-</strong>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Yakıt Maliyeti:</span>
+                                <strong class="text-primary" id="fuelCost">-</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span>Ekstra Ücret:</span>
+                                <strong class="text-primary" id="extraFee">-</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center p-3 bg-warning bg-opacity-25 rounded">
+                                <strong class="fs-5">Toplam Ek Maliyet:</strong>
+                                <h3 class="mb-0 text-danger" id="totalCost">₺0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="distanceError" style="display: none;">
+                    <div class="alert alert-danger border-0">
+                        <i class="fa fa-times-circle"></i>
+                        <strong>Hata!</strong> Mesafe hesaplanamadı. Lütfen daha sonra tekrar deneyin.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anladım</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Şehir adını temizle: "Istanbul Havalimanı (IST)" → "Istanbul"
+    function cleanCityName(location) {
+        return location.split(' ')[0].trim();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let pickUpLocation = '@ViewBag.PickUpLocation';
+        let dropOffLocation = '@ViewBag.DropOffLocation';
+
+        console.log('PickUp Location:', pickUpLocation);
+        console.log('DropOff Location:', dropOffLocation);
+
+        // Lokasyonlar farklıysa popup göster ve hesapla
+        if (pickUpLocation && dropOffLocation && pickUpLocation !== dropOffLocation) {
+            const modal = new bootstrap.Modal(document.getElementById('distanceAlertModal'));
+            modal.show();
+
+            // Şehir adlarını temizle
+            const cleanPickUp = cleanCityName(pickUpLocation);
+            const cleanDropOff = cleanCityName(dropOffLocation);
+
+            // Mesafe hesapla
+            calculateDistance(cleanPickUp, cleanDropOff);
+        }
+    });
+
+    async function calculateDistance(fromCity, toCity) {
+        try {
+            console.log('🔍 Mesafe hesaplanıyor...');
+            console.log('From:', fromCity);
+            console.log('To:', toCity);
+
+            // API çağrısı - DistanceController'ı kullan
+            const url = `/api/Distance/calculate?fromCity=${encodeURIComponent(fromCity)}&toCity=${encodeURIComponent(toCity)}&fuelType=GASOLINE`;
+            console.log('API URL:', url);
+
+            const response = await fetch(url);
+            console.log('Response Status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('API Result:', result);
+
+            // Loading'i gizle
+            document.getElementById('distanceLoadingSpinner').style.display = 'none';
+
+            if (result.success && result.data) {
+                const data = result.data;
+
+                // Şehir isimlerini göster
+                document.getElementById('fromCityDisplay').textContent = data.fromCity;
+                document.getElementById('toCityDisplay').textContent = data.toCity;
+
+                // Verileri doldur
+                document.getElementById('distanceKm').textContent = data.distanceKm.toFixed(1) + ' km';
+
+                const hours = Math.floor(data.estimatedDurationMinutes / 60);
+                const minutes = data.estimatedDurationMinutes % 60;
+                document.getElementById('estimatedTime').textContent = hours + ' saat ' + minutes + ' dk';
+
+                document.getElementById('fuelType').textContent = data.fuelType === 'GASOLINE' ? 'Benzin' : 'Dizel';
+                document.getElementById('fuelPrice').textContent = '₺' + data.currentFuelPrice.toFixed(2) + '/litre';
+                document.getElementById('fuelConsumption').textContent = data.averageFuelConsumption + ' L/100km';
+                document.getElementById('fuelCost').textContent = '₺' + data.fuelCost.toFixed(2);
+                document.getElementById('extraFee').textContent = '₺' + data.extraFee.toFixed(2);
+                document.getElementById('totalCost').textContent = '₺' + data.totalCost.toFixed(2);
+
+                // İçeriği göster
+                document.getElementById('distanceContent').style.display = 'block';
+
+                console.log('✅ Mesafe bilgileri başarıyla yüklendi!');
+            } else {
+                throw new Error('API veri döndürmedi');
+            }
+        } catch (error) {
+            console.error('❌ Mesafe hesaplama hatası:', error);
+
+            // Loading'i gizle
+            document.getElementById('distanceLoadingSpinner').style.display = 'none';
+
+            // Hata mesajını göster
+            document.getElementById('distanceError').style.display = 'block';
+        }
+    }
+</script>
+
+
+<style>
+    /* Kompakt Header - Çok daha az yer kaplar */
+    .page-header-compact {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-bottom: 3px solid #0d6efd;
+    }
+
+    /* Kartlar */
+    .card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+        }
+
+    .card-img-top {
+        transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.1);
+    }
+
+    /* Feature Box */
+    .feature-box {
+        background: #f8f9fa;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Price Section */
+    .price-section {
+        border: 2px dashed #dee2e6;
+    }
+
+    /* Badge Styling */
+    .badge {
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    /* Button Hover */
+    .btn-primary {
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        }
+
+    /* Modal Enhancements */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+    }
+
+    .modal-header {
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+</style>

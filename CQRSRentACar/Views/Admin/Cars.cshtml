@@ -1,0 +1,146 @@
+﻿@model List<CQRSRentACar.CQRSPattern.Results.CarResults.GetCarQueryResult>
+@{
+    ViewData["Title"] = "Araçlar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0 bg-gradient-primary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-white mb-0">🚗 Araçlar</h6>
+                        <a asp-action="CreateCar" class="btn btn-sm btn-light">
+                            <i class="fas fa-plus"></i> Yeni Araç Ekle
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">🚙 Araç</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📋 Özellikler</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">⚙️ Teknik</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">⭐ Değerlendirme</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">💰 Fiyat</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">⚡ İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int colorIndex = 0;
+                                }
+                                @foreach (var car in Model)
+                                {
+                                    var colors = new[] { "primary", "success", "info", "warning", "danger", "dark" };
+                                    var currentColor = colors[colorIndex % colors.Length];
+                                    colorIndex++;
+
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                @if (!string.IsNullOrEmpty(car.CarImage))
+                                                {
+                                                    var imagePath = car.CarImage.Replace("Cental-1.0.0/Cental-1.0.0/img/", "/img/");
+                                                    <div>
+                                                        <img src="@imagePath"
+                                                             class="avatar avatar-lg me-3"
+                                                             alt="@car.CarBrand @car.CarModel"
+                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        <div class="avatar avatar-lg bg-gradient-@currentColor me-3 align-items-center justify-content-center" style="display:none;">
+                                                            <span class="text-white text-lg">🚗</span>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        <div class="avatar avatar-lg bg-gradient-@currentColor me-3 d-flex align-items-center justify-content-center">
+                                                            <span class="text-white text-lg">🚗</span>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm font-weight-bold">@car.CarBrand</h6>
+                                                    <p class="text-xs text-secondary mb-0">@car.CarModel</p>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <span class="badge badge-sm bg-gradient-@currentColor">@car.CarYear</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs mb-1">
+                                                <i class="fas fa-users text-primary"></i>
+                                                <span class="font-weight-bold">@car.CarSeat</span>
+                                            </p>
+                                            <p class="text-xs mb-1">
+                                                <i class="fas fa-tachometer-alt text-success"></i>
+                                                <span class="text-secondary">@car.CarKm km</span>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs mb-1">
+                                                <i class="fas fa-cog text-info"></i>
+                                                <span class="badge badge-sm bg-gradient-info">@car.CarTransmission</span>
+                                            </p>
+                                            <p class="text-xs mb-1">
+                                                <i class="fas fa-gas-pump text-warning"></i>
+                                                <span class="badge badge-sm bg-gradient-warning">@car.CarFuel</span>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= Math.Floor(car.CarReview))
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    }
+                                                    else if (i - 0.5 <= (double)car.CarReview)
+                                                    {
+                                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="far fa-star text-warning"></i>
+                                                    }
+                                                }
+                                                <span class="text-xs ms-2 font-weight-bold">@car.CarReview.ToString("0.0")</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-sm bg-gradient-@currentColor">
+                                                ₺@car.CarPrice.ToString("N0")/gün
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a asp-action="UpdateCar" asp-route-id="@car.CarId" class="btn btn-sm btn-warning mb-0 me-1">
+                                                <i class="fas fa-edit"></i> Düzenle
+                                            </a>
+                                            <form asp-action="DeleteCar" asp-route-id="@car.CarId" method="post" class="d-inline" onsubmit="return confirm('Bu aracı silmek istediğinize emin misiniz?');">
+                                                <button type="submit" class="btn btn-sm btn-danger mb-0">
+                                                    <i class="fas fa-trash"></i> Sil
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+</style>

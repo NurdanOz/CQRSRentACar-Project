@@ -1,0 +1,28 @@
+[
+  {
+    "ContainingType": "CQRSRentACar.Controllers.DistanceController",
+    "Method": "CalculateDistance",
+    "RelativePath": "api/Distance/calculate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fromCity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "toCity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fuelType",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

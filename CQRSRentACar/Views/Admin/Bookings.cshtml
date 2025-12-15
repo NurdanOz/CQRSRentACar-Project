@@ -1,0 +1,126 @@
+﻿@model List<CQRSRentACar.CQRSPattern.Results.BookingResults.GetAllBookingsQueryResult>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0 bg-gradient-primary">
+                    <h6 class="text-white">🚗 Rezervasyonlar</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">👤 Müşteri</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">🚙 Araç</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📅 Tarih</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📍 Lokasyon</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">💰 Fiyat</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">⚡ İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int colorIndex = 0;
+                                }
+                                @foreach (var booking in Model)
+                                {
+                                    var colors = new[] { "primary", "success", "info", "warning", "danger", "dark" };
+                                    var currentColor = colors[colorIndex % colors.Length];
+                                    colorIndex++;
+
+                                    var statusColor = booking.Status == "Onaylandı" ? "success" :
+                                    booking.Status == "Beklemede" ? "warning" : "danger";
+
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div>
+                                                    <div class="avatar avatar-sm bg-gradient-@currentColor rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                        <span class="text-white text-sm">@booking.Name?.Substring(0, 1).ToUpper()</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">@booking.Name</h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fas fa-envelope"></i> @booking.Email
+                                                    </p>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fas fa-phone"></i> @booking.Phone
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">@booking.CarBrand</p>
+                                            <p class="text-xs text-secondary mb-0">@booking.CarModel</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                <i class="fas fa-calendar-check text-success"></i> @booking.PickUpDate.ToString("dd.MM.yyyy")
+                                            </p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <i class="fas fa-calendar-times text-danger"></i> @booking.DropOffDate.ToString("dd.MM.yyyy")
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs mb-0">
+                                                <i class="fas fa-map-marker-alt text-success"></i> @booking.PickUpLocation
+                                            </p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <i class="fas fa-map-marker-alt text-danger"></i> @booking.DropOffLocation
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-sm bg-gradient-@currentColor">
+                                                ₺@booking.TotalPrice.ToString("N0")
+                                            </span>
+                                            <p class="text-xs text-secondary mb-0 mt-1">
+                                                <span class="badge badge-sm bg-gradient-@statusColor">@booking.Status</span>
+                                            </p>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            @if (booking.Status != "Onaylandı")
+                                            {
+                                                <form asp-action="ApproveBooking" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@booking.BookingId" />
+                                                    <button type="submit" class="btn btn-sm btn-success mb-0 me-1">
+                                                        <i class="fas fa-check"></i> Onayla
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-secondary mb-0 me-1" disabled>
+                                                    <i class="fas fa-check"></i> Onaylandı
+                                                </button>
+                                            }
+
+                                            <form asp-action="DeleteBooking" method="post" class="d-inline" onsubmit="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');">
+                                                <input type="hidden" name="id" value="@booking.BookingId" />
+                                                <button type="submit" class="btn btn-sm btn-danger mb-0">
+                                                    <i class="fas fa-trash"></i> Sil
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+</style>

@@ -1,0 +1,103 @@
+﻿@model CQRSRentACar.CQRSPattern.Results.FeatureResults.GetFeatureByIdQueryResult
+@{
+   
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0 bg-gradient-warning">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-white mb-0">✏️ Özellik Düzenle</h6>
+                        <a asp-action="Features" class="btn btn-sm btn-light">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateFeature" method="post">
+                        <input type="hidden" name="FeatureId" value="@Model.FeatureId" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">🎯 Ana Başlık</label>
+                                <input type="text" class="form-control" name="Title" value="@Model.Title" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">📌 Alt Başlık</label>
+                                <input type="text" class="form-control" name="Title2" value="@Model.Title2">
+                                <small class="text-muted">Opsiyonel</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">📝 Açıklama 1</label>
+                                <textarea class="form-control" name="Description" rows="4" required>@Model.Description</textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">📄 Açıklama 2</label>
+                                <textarea class="form-control" name="Description2" rows="4">@Model.Description2</textarea>
+                                <small class="text-muted">Opsiyonel - İkinci açıklama paragrafı</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">🎨 Icon (Font Awesome Class)</label>
+                                <input type="text" class="form-control" name="Icon" value="@Model.Icon" placeholder="fa fa-trophy">
+                                <small class="text-muted">Örnek: fa fa-trophy, fa fa-map-pin, fa fa-road</small>
+
+                                @if (!string.IsNullOrEmpty(Model.Icon))
+                                {
+                                    <div class="mt-2">
+                                        <div class="p-2 border rounded bg-light text-center" style="max-width: 100px;">
+                                            <i class="@Model.Icon" style="font-size: 2rem; color: #344767;"></i>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">🖼️ Resim URL</label>
+                                <input type="text" class="form-control" name="ImageURL" value="@Model.ImageURL" placeholder="https://...">
+                                <small class="text-muted">Opsiyonel - Görsel URL'si</small>
+
+                                @if (!string.IsNullOrEmpty(Model.ImageURL))
+                                {
+                                    <div class="mt-2">
+                                        <img src="@Model.ImageURL" alt="Preview" class="img-thumbnail" style="max-width: 150px;">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button type="submit" class="btn bg-gradient-warning w-100">
+                                    <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 1px solid #d2d6da;
+    }
+
+        .form-control:focus {
+            border-color: #fb8c00;
+            box-shadow: 0 0 0 0.2rem rgba(251, 140, 0, 0.25);
+        }
+</style>

@@ -1,0 +1,87 @@
+﻿@model CQRSRentACar.CQRSPattern.Commands.TestimonialCommand.CreateTestimonialCommand
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0 bg-gradient-success">
+                    <div class="d-flex align-items-center">
+                        <h6 class="text-white mb-0">➕ Yeni Müşteri Yorumu Ekle</h6>
+                        <a asp-action="Testimonials" class="btn btn-sm btn-light ms-auto">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateTestimonial" method="post">
+                        <div class="row">
+                            <!-- Ad Soyad -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NameSurname" class="form-label">👤 Ad Soyad</label>
+                                <input asp-for="NameSurname" class="form-control" placeholder="Örn: Ayşe Yılmaz" required>
+                            </div>
+
+                            <!-- Meslek -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profession" class="form-label">💼 Meslek</label>
+                                <input asp-for="Profession" class="form-control" placeholder="Örn: İş İnsanı" required>
+                            </div>
+
+                            <!-- Puan -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Score" class="form-label">⭐ Puan (0-5)</label>
+                                <input asp-for="Score" type="number" step="0.1" min="0" max="5" class="form-control" placeholder="Örn: 5.00" required>
+                                <small class="text-muted">
+                                    💡 0.00 ile 5.00 arasında bir değer giriniz
+                                </small>
+                            </div>
+
+                            <!-- Görsel URL -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ImageUrl" class="form-label">🔗 Görsel URL</label>
+                                <input asp-for="ImageUrl" class="form-control" placeholder="Örn: Cental-1.0.0/Cental-1.0.0/img/testimonial-1.jpg">
+                            </div>
+
+                            <!-- Yorum -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Comment" class="form-label">💬 Müşteri Yorumu</label>
+                                <textarea asp-for="Comment" class="form-control" rows="4" placeholder="Müşterinin deneyimini ve görüşlerini buraya yazınız..." required></textarea>
+                                <small class="text-muted">
+                                    💡 Müşterinin hizmet hakkındaki detaylı görüşlerini giriniz
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-save"></i> Yorumu Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>

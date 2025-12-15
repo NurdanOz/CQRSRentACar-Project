@@ -1,0 +1,88 @@
+﻿@model List<CQRSRentACar.CQRSPattern.Results.SliderResults.GetSliderQueryResult>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0 bg-gradient-primary">
+                    <h6 class="text-white">🎬 Slider Yönetimi</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">🖼️ Görsel</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📌 Başlık</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📝 Açıklama</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">⚡ İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int colorIndex = 0;
+                                }
+                                @foreach (var slider in Model)
+                                {
+                                    var colors = new[] { "primary", "success", "info", "warning", "danger", "dark" };
+                                    var currentColor = colors[colorIndex % colors.Length];
+                                    colorIndex++;
+
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div>
+                                                    @if (!string.IsNullOrEmpty(slider.ImageUrl))
+                                                    {
+                                                        <img src="@slider.ImageUrl" class="avatar avatar-lg rounded me-2" alt="Slider Image">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="avatar avatar-lg bg-gradient-@currentColor rounded me-2 d-flex align-items-center justify-content-center">
+                                                            <span class="text-white text-lg">🎬</span>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm font-weight-bold">@slider.Title</h6>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs mb-0">
+                                                @(slider.Description?.Length > 80 ? slider.Description.Substring(0, 80) + "..." : slider.Description)
+                                            </p>
+                                        </td>
+                                        <td class="text-center">
+                                            <a asp-action="UpdateSlider" asp-route-id="@slider.SliderId" class="btn btn-sm btn-warning mb-0">
+                                                <i class="fas fa-edit"></i> Düzenle
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .avatar-lg {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+    }
+</style>

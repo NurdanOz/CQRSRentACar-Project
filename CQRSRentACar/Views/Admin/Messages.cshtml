@@ -1,0 +1,95 @@
+﻿@model List<CQRSRentACar.Entities.Message>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0 bg-gradient-primary">
+                    <h6 class="text-white">📧 Gelen Mesajlar</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    @if (Model == null || !Model.Any())
+                    {
+                        <div class="alert alert-warning m-3">
+                            <h5>⚠️ Hiç mesaj bulunamadı</h5>
+                            <p>Henüz sisteme mesaj gelmemiş.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">👤 Kişi</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📞 İletişim</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">📝 Konu</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">💬 Mesaj</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">⚡ Durum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int colorIndex = 0;
+                                    }
+                                    @foreach (var msg in Model)
+                                    {
+                                        var colors = new[] { "primary", "success", "info", "warning", "danger", "dark" };
+                                        var currentColor = colors[colorIndex % colors.Length];
+                                        colorIndex++;
+
+                                        <tr style="cursor: pointer;" onclick="window.location.href='/Admin/MessageDetail/@msg.MessageId'">
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <div class="avatar avatar-sm bg-gradient-@currentColor rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <span class="text-white text-sm">@(msg.FullName?.Substring(0, 1).ToUpper() ?? "?")</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">@(msg.FullName ?? "Bilinmeyen")</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    <i class="fas fa-envelope text-@currentColor"></i> @(msg.Email ?? "Email yok")
+                                                </p>
+                                                <p class="text-xs text-secondary mb-0">
+                                                    <i class="fas fa-phone text-success"></i> @(msg.Phone ?? "Telefon yok")
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-sm bg-gradient-@currentColor">@(msg.Subject ?? "Konu yok")</span>
+                                            </td>
+                                            <td>
+                                                <span class="text-xs">@(msg.MessageDetail?.Length > 50 ? msg.MessageDetail.Substring(0, 50) + "..." : msg.MessageDetail ?? "Mesaj yok")</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                @if (msg.EmailSent)
+                                                {
+                                                    <span class="badge badge-sm bg-gradient-success">
+                                                        <i class="fas fa-check"></i> Cevaplandı
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-sm bg-gradient-warning">
+                                                        <i class="fas fa-clock"></i> Bekliyor
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

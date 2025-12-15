@@ -1,0 +1,42 @@
+﻿@using CQRSRentACar.CQRSPattern.Results.ServiceResults
+@model List<GetServiceQueryResult>
+
+@{
+    Layout = null;
+}
+
+<div class="container-fluid service py-5">
+    <div class="container py-5">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+            <h1 class="display-5 text-capitalize mb-3"> Kiralama <span class="text-primary"> Sürecimiz </span></h1>
+            <p class="mb-0">
+                Sizin için araç kiralamayı üç basit adıma indirdik. Aşağıdaki adımları takip ederek hayalinizdeki araca hızlıca ulaşabilirsiniz.
+            </p>
+        </div>
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                int delay = 1;
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.@(delay)s">
+                        <div class="service-item p-4">
+                            <div class="service-icon mb-4">
+                                <i class="@item.IconUrl fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">@item.Title</h5>
+                            <p class="mb-0">@item.Description</p>
+                        </div>
+                    </div>
+                    delay = delay == 5 ? 1 : delay + 2;
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p class="text-muted">Henüz servis eklenmemiş.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

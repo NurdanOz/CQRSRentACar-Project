@@ -1,0 +1,231 @@
+﻿@model List<CQRSRentACar.CQRSPattern.Results.SliderResults.GetSliderQueryResult>
+
+<div class="header-carousel">
+    <div id="carouselId" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+        <ol class="carousel-indicators">
+            @if (Model != null)
+            {
+                for (int i = 0; i < Model.Count(); i++)
+                {
+                    <li data-bs-target="#carouselId" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-label="@(i + 1). slayt"></li>
+                }
+            }
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            @if (Model != null)
+            {
+                int sliderIndex = 0;
+                @foreach (var slider in Model)
+                {
+                    <div class="carousel-item @(sliderIndex == 0 ? "active" : "")">
+                        <img src="~/@slider.ImageUrl" class="img-fluid w-100" alt="@slider.Title" />
+                        <div class="carousel-caption">
+                            <div class="container py-4">
+                                <div class="row g-5">
+                                    <div class="col-lg-6 fadeInLeft animated" data-animation="fadeInLeft" data-delay="1s" style="animation-delay: 1s;">
+                                        <div class="bg-secondary rounded p-5">
+                                            <h4 class="text-white mb-4">ARAÇ REZERVASYONU YAPIN</h4>
+                                            <form action="/Booking/AvailableCars" method="post">
+                                                <div class="row g-3">
+                                                    <!-- ALIŞ YERİ - DROPDOWN -->
+                                                    <div class="col-12">
+                                                        <div class="input-group">
+                                                            <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                                <span class="fas fa-map-marker-alt"></span> <span class="ms-1">Alış Yeri</span>
+                                                            </div>
+                                                            <select class="form-control" id="pickupLocation" name="pickUpLocation" required>
+                                                                <option value="">Havalimanı Seçin...</option>
+                                                                <!-- JavaScript ile doldurulacak -->
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- BIRAKIRŞ YERİ - DROPDOWN -->
+                                                    <div class="col-12">
+                                                        <div class="input-group">
+                                                            <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                                <span class="fas fa-map-marker-alt"></span><span class="ms-1">Bırakış Yeri</span>
+                                                            </div>
+                                                            <select class="form-control" id="dropoffLocation" name="dropOffLocation" required>
+                                                                <option value="">Havalimanı Seçin...</option>
+                                                                <!-- JavaScript ile doldurulacak -->
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- ALIŞ TARİHİ -->
+                                                    <div class="col-12">
+                                                        <div class="input-group">
+                                                            <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                                <span class="fas fa-calendar-alt"></span><span class="ms-1">Alış Tarihi</span>
+                                                            </div>
+                                                            <input class="form-control" type="date" name="pickUpDate" id="pickUpDate" required>
+                                                            <select class="form-select ms-3" name="pickUpTime" aria-label="Alış saati">
+                                                                <option value="00:00">00:00</option>
+                                                                <option value="01:00">01:00</option>
+                                                                <option value="02:00">02:00</option>
+                                                                <option value="03:00">03:00</option>
+                                                                <option value="04:00">04:00</option>
+                                                                <option value="05:00">05:00</option>
+                                                                <option value="06:00">06:00</option>
+                                                                <option value="07:00">07:00</option>
+                                                                <option value="08:00">08:00</option>
+                                                                <option value="09:00">09:00</option>
+                                                                <option value="10:00">10:00</option>
+                                                                <option value="11:00">11:00</option>
+                                                                <option selected value="12:00">12:00</option>
+                                                                <option value="13:00">13:00</option>
+                                                                <option value="14:00">14:00</option>
+                                                                <option value="15:00">15:00</option>
+                                                                <option value="16:00">16:00</option>
+                                                                <option value="17:00">17:00</option>
+                                                                <option value="18:00">18:00</option>
+                                                                <option value="19:00">19:00</option>
+                                                                <option value="20:00">20:00</option>
+                                                                <option value="21:00">21:00</option>
+                                                                <option value="22:00">22:00</option>
+                                                                <option value="23:00">23:00</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- BIRAKIŞ TARİHİ -->
+                                                    <div class="col-12">
+                                                        <div class="input-group">
+                                                            <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                                <span class="fas fa-calendar-alt"></span><span class="ms-1">Bırakış Tarihi</span>
+                                                            </div>
+                                                            <input class="form-control" type="date" name="dropOffDate" id="dropOffDate" required>
+                                                            <select class="form-select ms-3" name="dropOffTime" aria-label="Bırakış saati">
+                                                                <option value="00:00">00:00</option>
+                                                                <option value="01:00">01:00</option>
+                                                                <option value="02:00">02:00</option>
+                                                                <option value="03:00">03:00</option>
+                                                                <option value="04:00">04:00</option>
+                                                                <option value="05:00">05:00</option>
+                                                                <option value="06:00">06:00</option>
+                                                                <option value="07:00">07:00</option>
+                                                                <option value="08:00">08:00</option>
+                                                                <option value="09:00">09:00</option>
+                                                                <option value="10:00">10:00</option>
+                                                                <option value="11:00">11:00</option>
+                                                                <option selected value="12:00">12:00</option>
+                                                                <option value="13:00">13:00</option>
+                                                                <option value="14:00">14:00</option>
+                                                                <option value="15:00">15:00</option>
+                                                                <option value="16:00">16:00</option>
+                                                                <option value="17:00">17:00</option>
+                                                                <option value="18:00">18:00</option>
+                                                                <option value="19:00">19:00</option>
+                                                                <option value="20:00">20:00</option>
+                                                                <option value="21:00">21:00</option>
+                                                                <option value="22:00">22:00</option>
+                                                                <option value="23:00">23:00</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- BUTON -->
+                                                    <div class="col-12">
+                                                        <button type="submit" class="btn btn-light w-100 py-2">Müsait Araçları Göster</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 d-none d-lg-flex fadeInRight animated" data-animation="fadeInRight" data-delay="1s" style="animation-delay: 1s;">
+                                        <div class="text-start">
+                                            <h1 class="display-5 text-white">@slider.Title</h1>
+                                            <p class="text-white">@slider.Description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    sliderIndex++;
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tarih kontrolü
+        var today = new Date().toISOString().split('T')[0];
+        var pickUpDateInput = document.getElementById('pickUpDate');
+        var dropOffDateInput = document.getElementById('dropOffDate');
+
+        if (pickUpDateInput) {
+            pickUpDateInput.setAttribute('min', today);
+
+            pickUpDateInput.addEventListener('change', function() {
+                dropOffDateInput.setAttribute('min', this.value);
+            });
+        }
+
+        if (dropOffDateInput) {
+            dropOffDateInput.setAttribute('min', today);
+        }
+
+        // Havalimanlarını yükle
+        loadAirports();
+    });
+
+    async function loadAirports() {
+        try {
+            const response = await fetch('/Default/GetTurkeyAirports');
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                const pickupSelect = document.getElementById('pickupLocation');
+                const dropoffSelect = document.getElementById('dropoffLocation');
+
+                // Her iki dropdown'a da havalimanlarını ekle
+                result.data.forEach(airport => {
+                    // Pickup için option
+                    const option1 = document.createElement('option');
+                    option1.value = airport.name; // Tam isim gönder
+                    option1.textContent = airport.name;
+                    pickupSelect.appendChild(option1);
+
+                    // Dropoff için option
+                    const option2 = document.createElement('option');
+                    option2.value = airport.name; // Tam isim gönder
+                    option2.textContent = airport.name;
+                    dropoffSelect.appendChild(option2);
+                });
+
+                console.log('✅ Havalimanları başarıyla yüklendi!');
+            } else {
+                console.error('❌ Havalimanları yüklenemedi:', result.message);
+            }
+        } catch (error) {
+            console.error('❌ API hatası:', error);
+        }
+    }
+</script>
+
+<style>
+    /* Dropdown stilini güzelleştir */
+    #pickupLocation, #dropoffLocation {
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+        background-color: white;
+        cursor: pointer;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+        #pickupLocation:focus, #dropoffLocation:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Dropdown seçeneklerini düzenle */
+        #pickupLocation option, #dropoffLocation option {
+            padding: 8px;
+        }
+</style>

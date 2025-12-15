@@ -1,0 +1,94 @@
+﻿@model CQRSRentACar.CQRSPattern.Results.EmployeeResults.GetEmployeeByIdQueryResult
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0 bg-gradient-warning">
+                    <div class="d-flex align-items-center">
+                        <h6 class="text-white mb-0">✏️ Personel Güncelle</h6>
+                        <a asp-action="Employees" class="btn btn-sm btn-light ms-auto">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateEmployee" method="post">
+                        <input type="hidden" asp-for="EmployeeId" />
+
+                        <div class="row">
+                            <!-- Mevcut Görsel Önizleme -->
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">🖼️ Mevcut Profil Fotoğrafı</label>
+                                <div class="text-center">
+                                    @if (!string.IsNullOrEmpty(Model.ImageUrl) && Model.ImageUrl != "DENEME")
+                                    {
+                                        <img src="~/@Model.ImageUrl" alt="@Model.NameSurname" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="d-inline-block">
+                                            <div class="bg-gradient-secondary rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 150px; height: 150px;">
+                                                <span style="font-size: 60px;">👤</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    <p class="text-muted mt-2 mb-0">@Model.NameSurname</p>
+                                </div>
+                            </div>
+
+                            <!-- Ad Soyad -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NameSurname" class="form-label">👤 Ad Soyad</label>
+                                <input asp-for="NameSurname" class="form-control" placeholder="Örn: Ahmet Yılmaz" required>
+                            </div>
+
+                            <!-- Ünvan -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Profession" class="form-label">💼 Ünvan</label>
+                                <input asp-for="Profession" class="form-control" placeholder="Örn: Müşteri İlişkileri Uzmanı" required>
+                            </div>
+
+                            <!-- Görsel URL -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="ImageUrl" class="form-label">🔗 Görsel URL</label>
+                                <input asp-for="ImageUrl" class="form-control" placeholder="Örn: Cental-1.0.0/Cental-1.0.0/img/team-1.jpg">
+                                <small class="text-muted">
+                                    💡 Personel fotoğrafının tam yolunu giriniz
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-warning w-100">
+                                    <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
