@@ -86,7 +86,6 @@ Antalya → Trabzon
 
 **Nurdan Öz**
 - GitHub: [@NurdanOz](https://github.com/NurdanOz)
-- LinkedIn: [Nurdan Öz](https://linkedin.com/in/nurdanoz)
 
 ## 📝 Lisans
 
